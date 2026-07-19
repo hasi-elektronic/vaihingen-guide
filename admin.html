@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin – Vaihingen Guide</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header><div class="wrap nav">
+  <a class="brand" href="index.html">Vaihingen <em>Guide</em></a>
+  <nav><span style="font-size:.85rem;color:var(--ink-soft)">Admin</span>
+  <button class="lang" id="logout" style="display:none">Abmelden</button></nav>
+</div></header>
+
+<section><div class="wrap">
+  <!-- Login -->
+  <div id="login" style="max-width:340px">
+    <h2 style="font-family:'Fraunces';margin-bottom:14px">Anmelden</h2>
+    <input class="search" type="password" id="pw" placeholder="Passwort" style="max-width:100%">
+    <button class="btn" id="doLogin" style="margin-top:10px">Anmelden</button>
+    <p id="loginErr" style="color:var(--wein);font-size:.85rem;margin-top:8px"></p>
+  </div>
+
+  <!-- Panel -->
+  <div id="panel" class="hide">
+    <div class="sec-head"><h2>Einträge</h2>
+      <a><button class="btn" id="newBtn">+ Neuer Eintrag</button></a></div>
+
+    <div id="formWrap" class="hide">
+      <div class="form" id="form">
+        <label>Typ<select id="f_type"><option value="business">Betrieb</option><option value="sight">Sehenswürdigkeit</option></select></label>
+        <label>Kategorie<select id="f_category">
+          <option value="gastro">Gastronomie</option><option value="einkaufen">Einkaufen</option>
+          <option value="dienstleistung">Dienstleistung</option><option value="kultur">Kultur</option>
+          <option value="natur">Natur</option><option value="aktiv">Aktiv</option></select></label>
+        <label>Name<input id="f_name"></label>
+        <label>Slug (URL)<input id="f_slug" placeholder="auto aus Name"></label>
+        <label class="full">Beschreibung (DE)<textarea id="f_desc_de"></textarea></label>
+        <label class="full">Beschreibung (EN)<textarea id="f_desc_en"></textarea></label>
+        <label class="full">Adresse<input id="f_address"></label>
+        <label>Lat<input id="f_lat" type="number" step="any"></label>
+        <label>Lng<input id="f_lng" type="number" step="any"></label>
+        <label>Telefon<input id="f_phone"></label>
+        <label>E-Mail<input id="f_email"></label>
+        <label>Webseite<input id="f_website" placeholder="https://…"></label>
+        <label>Öffnungszeiten<input id="f_hours"></label>
+        <label>Empfohlen<select id="f_featured"><option value="0">Nein</option><option value="1">Ja ★</option></select></label>
+        <label>Status<select id="f_status"><option value="published">Veröffentlicht</option><option value="draft">Entwurf</option></select></label>
+        <label class="full">Fotos<input type="file" id="f_file" accept="image/*">
+          <div class="gal" id="f_gal"></div></label>
+        <div class="full" style="display:flex;gap:10px">
+          <button class="btn" id="saveBtn">Speichern</button>
+          <button class="btn sec" id="cancelBtn">Abbrechen</button>
+          <button class="btn danger" id="delBtn" style="margin-left:auto">Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <table class="admin-table"><thead><tr>
+      <th>Name</th><th>Typ</th><th>Kategorie</th><th>Status</th><th>★</th><th></th>
+    </tr></thead><tbody id="rows"></tbody></table>
+  </div>
+</div></section>
+
+<script>
+const API='https://vaihingen-guide-api.hguencavdi.workers.dev';
+let TOK=localStorage.getItem('vg_tok')||'', EDIT=null, IMAGES=[];
+const $=id=>document.getElementById(id);
+const FIELDS=['type','category','name','slug','desc_de','desc_en','address','lat','lng','phone','email','website','hours','featured','status'];
+const hdr=()=>({'Content-Type':'application/json','Authorization':'Bearer '+TOK});
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.append(d);setTimeout(()=>d.remove(),2200)}
+
+async function login(){
+  const r=await fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('pw').value})});
+  const d=await r.json();
+  if(d.token){TOK=d.token;localStorage.setItem('vg_tok',TOK);show()}else $('loginErr').textContent='Falsches Passwort.';
+}
+async function show(){
+  $('login').classList.add('hide');$('panel').classList.remove('hide');$('logout').style.display='';
+  loadRows();
+}
+async function loadRows(){
+  const r=await fetch(API+'/api/admin/places',{headers:hdr()});
+  if(r.status===401){localStorage.removeItem('vg_tok');location.reload();return}
+  const rows=await r.json();
+  $('rows').innerHTML=rows.map(p=>`<tr>
+    <td><b>${p.name}</b></td><td>${p.type==='sight'?'Sehensw.':'Betrieb'}</td>
+    <td>${p.category}</td><td>${p.status==='published'?'✅':'📝'}</td>
+    <td>${p.featured?'★':''}</td>
+    <td><button class="btn sec" style="padding:5px 12px" onclick='edit(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Bearbeiten</button></td>
+  </tr>`).join('');
+}
+window.edit=function(p){
+  EDIT=p; IMAGES=JSON.parse(p.images||'[]');
+  FIELDS.forEach(f=>{const el=$('f_'+f);if(el)el.value=p[f]??''});
+  renderGal(); $('formWrap').classList.remove('hide'); $('delBtn').style.display='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderGal(){
+  $('f_gal').innerHTML=IMAGES.map((i,x)=>`<div style="position:relative"><img src="${API+i}" style="height:80px;border-radius:8px">
+  <button onclick="IMAGES.splice(${x},1);renderGal()" style="position:absolute;top:2px;right:2px;border:0;background:var(--wein);color:#fff;border-radius:50%;width:20px;height:20px;cursor:pointer">×</button></div>`).join('');
+}
+window.renderGal=renderGal; window.IMAGES=IMAGES;
+$('newBtn').onclick=()=>{EDIT=null;IMAGES=[];FIELDS.forEach(f=>{const el=$('f_'+f);if(el)el.value=''});
+  $('f_type').value='business';$('f_category').value='gastro';$('f_featured').value='0';$('f_status').value='published';
+  renderGal();$('formWrap').classList.remove('hide');$('delBtn').style.display='none'};
+$('cancelBtn').onclick=()=>$('formWrap').classList.add('hide');
+$('f_file').onchange=async e=>{
+  const fd=new FormData();fd.append('file',e.target.files[0]);
+  toast('Lade hoch …');
+  const r=await fetch(API+'/api/admin/upload',{method:'POST',headers:{'Authorization':'Bearer '+TOK},body:fd});
+  const d=await r.json();
+  if(d.path){IMAGES.push(d.path);renderGal();toast('Foto hochgeladen')}else toast('Fehler beim Upload');
+  e.target.value='';
+};
+$('saveBtn').onclick=async()=>{
+  const b={};FIELDS.forEach(f=>{const el=$('f_'+f);if(el)b[f]=el.value});
+  b.featured=Number(b.featured);b.lat=b.lat?Number(b.lat):null;b.lng=b.lng?Number(b.lng):null;
+  if(!b.slug&&b.name)b.slug=b.name.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  b.images=JSON.stringify(IMAGES);
+  const url=EDIT?API+'/api/admin/places/'+EDIT.id:API+'/api/admin/places';
+  const r=await fetch(url,{method:EDIT?'PUT':'POST',headers:hdr(),body:JSON.stringify(b)});
+  const d=await r.json();
+  if(d.ok){toast('Gespeichert');$('formWrap').classList.add('hide');loadRows()}else toast('Fehler: '+(d.error||''));
+};
+$('delBtn').onclick=async()=>{
+  if(!EDIT||!confirm('„'+EDIT.name+'" wirklich löschen?'))return;
+  await fetch(API+'/api/admin/places/'+EDIT.id,{method:'DELETE',headers:hdr()});
+  toast('Gelöscht');$('formWrap').classList.add('hide');loadRows();
+};
+$('doLogin').onclick=login;
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('logout').onclick=()=>{localStorage.removeItem('vg_tok');location.reload()};
+if(TOK)show();
+</script>
+</body></html>

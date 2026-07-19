@@ -1,0 +1,13 @@
+{
+  "name": "Vaihingen Guide",
+  "short_name": "VaiGuide",
+  "description": "Sehenswürdigkeiten und lokale Betriebe in Vaihingen an der Enz",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f8",
+  "theme_color": "#1c6e86",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
