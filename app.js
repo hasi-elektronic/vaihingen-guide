@@ -3,18 +3,18 @@ const ICONS = {gastro:'🍽️',einkaufen:'🛍️',dienstleistung:'🔧',kultur
 
 /* ---------- i18n ---------- */
 const T = {
-  de:{nav_ent:'Entdecken',nav_guide:'Betriebe',hero_eyebrow:'Stadt an der Enz · erstmals erwähnt 779',
+  de:{nav_ent:'Entdecken',nav_guide:'Betriebe',nav_ot:'Stadtteile',sec_ot:'Stadtteile',hero_eyebrow:'Stadt an der Enz · erstmals erwähnt 779',
     hero_h:'Entdecke Vaihingen an der Enz.',hero_p:'Sehenswürdigkeiten, lokale Betriebe und die schönsten Ecken der Stadt – in einem Guide.',
     feat:'Empfohlen',sec_sights:'Sehenswürdigkeiten',sec_biz:'Lokale Betriebe',all:'Alle anzeigen',
     cat_all:'Alle',cat_gastro:'Gastronomie',cat_einkaufen:'Einkaufen',cat_dienstleistung:'Dienstleistung',
-    cat_kultur:'Kultur',cat_natur:'Natur',cat_aktiv:'Aktiv',search:'Suchen …',map:'Karte',
+    cat_kultur:'Kultur',cat_ortsteil:'Ortsteil',cat_natur:'Natur',cat_aktiv:'Aktiv',search:'Suchen …',map:'Karte',
     back:'← Zurück',website:'Webseite',empty:'Keine Einträge gefunden.',
     foot:'Ein Community-Projekt für Vaihingen an der Enz.'},
-  en:{nav_ent:'Discover',nav_guide:'Businesses',hero_eyebrow:'Town on the Enz · first mentioned 779',
+  en:{nav_ent:'Discover',nav_guide:'Businesses',nav_ot:'Districts',sec_ot:'Districts',hero_eyebrow:'Town on the Enz · first mentioned 779',
     hero_h:'Discover Vaihingen an der Enz.',hero_p:'Sights, local businesses and the most beautiful corners of the town – in one guide.',
     feat:'Featured',sec_sights:'Sights',sec_biz:'Local businesses',all:'Show all',
     cat_all:'All',cat_gastro:'Food & drink',cat_einkaufen:'Shopping',cat_dienstleistung:'Services',
-    cat_kultur:'Culture',cat_natur:'Nature',cat_aktiv:'Active',search:'Search …',map:'Map',
+    cat_kultur:'Culture',cat_ortsteil:'District',cat_natur:'Nature',cat_aktiv:'Active',search:'Search …',map:'Map',
     back:'← Back',website:'Website',empty:'No entries found.',
     foot:'A community project for Vaihingen an der Enz.'}
 };
@@ -69,9 +69,12 @@ async function pageHome(){
   const featS = all.filter(p=>p.type==='sight'&&p.featured);
   document.getElementById('featSights').innerHTML = (featS.length?featS:all.filter(p=>p.type==='sight').slice(0,3)).map(cardHTML).join('');
   document.getElementById('featBiz').innerHTML = (featB.length?featB:all.filter(p=>p.type==='business').slice(0,3)).map(cardHTML).join('');
+  const ot = all.filter(p=>p.type==='ortsteil');
+  const otEl = document.getElementById('featOt'); if(otEl) otEl.innerHTML = ot.map(cardHTML).join('');
 }
 async function pageList(type, cats){
   const chipsEl = document.getElementById('chips');
+  if(!cats.length) chipsEl.classList.add('hide');
   chipsEl.innerHTML = ['all',...cats].map(c=>`<button class="chip${c==='all'?' on':''}" data-c="${c}">${t('cat_'+c)}</button>`).join('');
   const grid = document.getElementById('grid');
   let cur='all';
@@ -97,7 +100,7 @@ async function pageDetail(){
   document.title = p.name+' – Vaihingen Guide';
   const im = imgs(p);
   document.getElementById('d').innerHTML = `
-    <a class="back" href="${p.type==='sight'?'entdecken':'guide'}.html">${t('back')}</a>
+    <a class="back" href="${p.type==='sight'?'entdecken':p.type==='ortsteil'?'ortsteile':'guide'}.html">${t('back')}</a>
     <span class="eyebrow" style="margin-top:14px">${t('cat_'+p.category)}${p.featured?' · ★ '+t('feat'):''}</span>
     <h1>${p.name}</h1>
     ${im.length?`<div class="gal">${im.map(i=>`<img src="${API+i}" alt="${p.name}">`).join('')}</div>${p.img_credit?`<p style="font-size:.72rem;color:var(--ink-soft);margin-top:-8px">${p.img_credit}</p>`:''}`:''}
@@ -125,6 +128,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(pg==='home') pageHome();
   if(pg==='guide') pageList('business',['gastro','einkaufen','dienstleistung']);
   if(pg==='entdecken') pageList('sight',['kultur','natur','aktiv']);
+  if(pg==='ortsteile') pageList('ortsteil',[]);
   if(pg==='detail') pageDetail();
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 });
