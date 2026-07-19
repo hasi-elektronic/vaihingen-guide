@@ -100,7 +100,7 @@ async function pageDetail(){
     <a class="back" href="${p.type==='sight'?'entdecken':'guide'}.html">${t('back')}</a>
     <span class="eyebrow" style="margin-top:14px">${t('cat_'+p.category)}${p.featured?' · ★ '+t('feat'):''}</span>
     <h1>${p.name}</h1>
-    ${im.length?`<div class="gal">${im.map(i=>`<img src="${API+i}" alt="${p.name}">`).join('')}</div>`:''}
+    ${im.length?`<div class="gal">${im.map(i=>`<img src="${API+i}" alt="${p.name}">`).join('')}</div>${p.img_credit?`<p style="font-size:.72rem;color:var(--ink-soft);margin-top:-8px">${p.img_credit}</p>`:''}`:''}
     <p class="desc">${desc(p)}</p>
     <div class="meta">
       ${p.address?`<div><span>📍</span>${p.address}</div>`:''}

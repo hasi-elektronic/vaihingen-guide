@@ -43,6 +43,7 @@
         <label>E-Mail<input id="f_email"></label>
         <label>Webseite<input id="f_website" placeholder="https://…"></label>
         <label>Öffnungszeiten<input id="f_hours"></label>
+        <label>Foto-Credit<input id="f_img_credit" placeholder="Foto: Name · Lizenz"></label>
         <label>Empfohlen<select id="f_featured"><option value="0">Nein</option><option value="1">Ja ★</option></select></label>
         <label>Status<select id="f_status"><option value="published">Veröffentlicht</option><option value="draft">Entwurf</option></select></label>
         <label class="full">Fotos<input type="file" id="f_file" accept="image/*">
@@ -65,7 +66,7 @@
 const API='https://vaihingen-guide-api.hguencavdi.workers.dev';
 let TOK=localStorage.getItem('vg_tok')||'', EDIT=null, IMAGES=[];
 const $=id=>document.getElementById(id);
-const FIELDS=['type','category','name','slug','desc_de','desc_en','address','lat','lng','phone','email','website','hours','featured','status'];
+const FIELDS=['type','category','name','slug','desc_de','desc_en','address','lat','lng','phone','email','website','hours','featured','status','img_credit'];
 const hdr=()=>({'Content-Type':'application/json','Authorization':'Bearer '+TOK});
 function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.append(d);setTimeout(()=>d.remove(),2200)}
 
