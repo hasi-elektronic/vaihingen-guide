@@ -16,38 +16,44 @@
 <header><div class="wrap nav">
   <a class="brand" href="index.html">Vaihingen <em>Guide</em></a>
   <nav>
-    <a href="entdecken.html" data-i="nav_ent">Entdecken</a>
-    <a href="guide.html" data-i="nav_guide">Betriebe</a>
-    <a href="ortsteile.html" data-i="nav_ot">Stadtteile</a>
+    <span class="nav-links">
+      <a href="entdecken.html" data-i="nav_ent">Entdecken</a>
+      <a href="guide.html" data-i="nav_guide">Betriebe</a>
+      <a href="ortsteile.html" data-i="nav_ot">Stadtteile</a>
+      <a href="karte.html" data-i="nav_map">Karte</a>
+    </span>
     <button id="langBtn" class="lang">EN</button>
   </nav>
 </div></header>
-<div class="hero"><div class="wrap">
-  <span class="eyebrow" data-i="hero_eyebrow">Stadt an der Enz · erstmals erwähnt 779</span>
-  <h1 data-i="hero_h">Entdecke Vaihingen an der Enz.</h1>
-  <p data-i="hero_p">Sehenswürdigkeiten, lokale Betriebe und die schönsten Ecken der Stadt – in einem Guide.</p>
-  <div class="chips">
-    <a class="chip" href="entdecken.html" data-i="sec_sights">Sehenswürdigkeiten</a>
-    <a class="chip" href="guide.html?cat=gastro" data-i="cat_gastro">Gastronomie</a>
-    <a class="chip" href="guide.html" data-i="sec_biz">Lokale Betriebe</a>
+<div class="hero">
+  <div class="hero-media" id="heroMedia"></div>
+  <div class="hero-scrim"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow" data-i="hero_eyebrow">Stadt an der Enz · erstmals erwähnt 779</span>
+    <h1 data-i="hero_h">Entdecke Vaihingen an der Enz.</h1>
+    <p data-i="hero_p">Sehenswürdigkeiten, lokale Betriebe und die schönsten Ecken der Stadt – in einem Guide.</p>
+    <div class="chips">
+      <a class="chip" href="entdecken.html" data-i="sec_sights">Sehenswürdigkeiten</a>
+      <a class="chip" href="guide.html?cat=gastro" data-i="cat_gastro">Gastronomie</a>
+      <a class="chip" href="guide.html" data-i="sec_biz">Lokale Betriebe</a>
+    </div>
   </div>
-</div>
-<svg class="river" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
-  <path class="p2" d="M-10,60 C150,20 260,85 420,55 C580,25 660,80 820,50 C980,20 1080,75 1210,45"/>
-  <path d="M-10,65 C150,25 260,90 420,60 C580,30 660,85 820,55 C980,25 1080,80 1210,50"/>
-</svg>
+  <svg class="river" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true">
+    <path class="p2" d="M-10,45 C150,10 260,65 420,40 C580,15 660,60 820,35 C980,10 1080,55 1210,30"/>
+    <path d="M-10,50 C150,15 260,70 420,45 C580,20 660,65 820,40 C980,15 1080,60 1210,35"/>
+  </svg>
 </div>
 <section><div class="wrap">
   <div class="sec-head"><h2 data-i="sec_sights">Sehenswürdigkeiten</h2><a href="entdecken.html" data-i="all">Alle anzeigen</a></div>
-  <div class="grid" id="featSights"></div>
+  <div class="row" id="featSights"></div>
 </div></section>
 <section><div class="wrap">
   <div class="sec-head"><h2 data-i="sec_biz">Lokale Betriebe</h2><a href="guide.html" data-i="all">Alle anzeigen</a></div>
-  <div class="grid" id="featBiz"></div>
+  <div class="row" id="featBiz"></div>
 </div></section>
 <section><div class="wrap">
   <div class="sec-head"><h2 data-i="sec_ot">Stadtteile</h2><a href="ortsteile.html" data-i="all">Alle anzeigen</a></div>
-  <div class="grid" id="featOt"></div>
+  <div class="row" id="featOt"></div>
 </div></section>
 <footer><div class="wrap">
   <span data-i="foot">Ein Community-Projekt für Vaihingen an der Enz.</span>

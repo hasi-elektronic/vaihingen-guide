@@ -1,5 +1,5 @@
-const CACHE='vg-v3';
-const SHELL=['/','/index.html','/entdecken.html','/guide.html','/ortsteile.html','/ort.html','/style.css','/app.js','/manifest.webmanifest','/icons/icon-192.png'];
+const CACHE='vg-v4';
+const SHELL=['/','/index.html','/entdecken.html','/guide.html','/ortsteile.html','/karte.html','/ort.html','/style.css','/app.js','/manifest.webmanifest','/icons/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{
