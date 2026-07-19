@@ -1,0 +1,12 @@
+name = "vaihingen-guide-api"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vaihingen-guide"
+database_id = "319e8c86-7fe8-42aa-b318-520f3e6f992c"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "vaihingen-guide"
